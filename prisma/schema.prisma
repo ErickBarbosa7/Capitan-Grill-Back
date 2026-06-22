@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 0. Tabla de Usuarios (Admin)
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+// 1. Tabla de Categorías
+model Category {
+  id        Int        @id @default(autoincrement())
+  slug      String     @unique
+  nameEs    String     @map("name_es")
+  nameEn    String     @map("name_en")
+  sortOrder Int        @default(0) @map("sort_order")
+  isActive  Boolean    @default(true) @map("is_active")
+  createdAt DateTime   @default(now()) @map("created_at")
+  menuItems MenuItem[]
+
+  @@map("categories")
+}
+
+// 2. Tabla de Platillos (Menú)
+model MenuItem {
+  id            Int             @id @default(autoincrement())
+  categoryId    Int?            @map("category_id")
+  category      Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  code          String?         @unique
+  nameEs        String          @map("name_es")
+  nameEn        String          @map("name_en")
+  descriptionEs String?         @map("description_es")
+  descriptionEn String?         @map("description_en")
+  price         Decimal         @db.Decimal(10, 2)
+  isAvailable   Boolean         @default(true) @map("is_available")
+  isActive      Boolean         @default(true) @map("is_active")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  images        MenuItemImage[]
+
+  @@map("menu_items")
+}
+
+// 3. Tabla de Imágenes (Soporta múltiples imágenes por platillo)
+model MenuItemImage {
+  id         Int      @id @default(autoincrement())
+  menuItemId Int      @map("menu_item_id")
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  url        String
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("menu_item_images")
+}
