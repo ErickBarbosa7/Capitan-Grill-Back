@@ -8,6 +8,8 @@ const authRoutes = require('./routes/auth.routes');
 const statsRoutes = require('./routes/stats.routes');
 const activityRoutes = require('./routes/activity.routes');
 const aiRoutes = require('./routes/ai.routes');
+const expenseCategoryRoutes = require('./routes/expenseCategory.routes');
+const expenseRoutes = require('./routes/expense.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +25,8 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/expense-categories', expenseCategoryRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {

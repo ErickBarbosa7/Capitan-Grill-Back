@@ -3,6 +3,8 @@ const prisma = require('../src/config/db.js');
 async function main() {
   console.log('Iniciando el seeding...');
 
+  await prisma.expense.deleteMany({});
+  await prisma.expenseCategory.deleteMany({});
   await prisma.menuItemImage.deleteMany({});
   await prisma.menuItem.deleteMany({});
   await prisma.category.deleteMany({});
@@ -30,6 +32,19 @@ async function main() {
     data: { nameEs: 'Bebidas', nameEn: 'Drinks', slug: 'bebidas', sortOrder: 3 },
   });
   console.log('Categorías creadas.');
+
+  // ── Categorías de Gastos ──
+  await prisma.expenseCategory.createMany({
+    data: [
+      { name: 'Bebidas' },
+      { name: 'Carnes' },
+      { name: 'Limpieza' },
+      { name: 'Empaque' },
+      { name: 'Gas / Transporte' },
+      { name: 'Otros' },
+    ],
+  });
+  console.log('Categorías de gastos creadas.');
 
   // ── Cortes Finos ──
   const cortesList = [
